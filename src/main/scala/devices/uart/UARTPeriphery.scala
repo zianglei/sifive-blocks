@@ -8,9 +8,12 @@ import freechips.rocketchip.subsystem.{BaseSubsystem, PeripheryBusKey}
 case object PeripheryUARTKey extends Field[Seq[UARTParams]]
 
 trait HasPeripheryUART { this: BaseSubsystem =>
-  val uartNodes = p(PeripheryUARTKey).map { ps =>
+  val uart = p(PeripheryUARTKey).map { ps =>
     val divinit = (p(PeripheryBusKey).frequency / 115200).toInt
-    UART.attach(UARTAttachParams(ps, divinit, pbus, ibus.fromAsync)).ioNode.makeSink
+    UART.attach(UARTAttachParams(ps, divinit, pbus, ibus.fromAsync))
+  }
+  val uartNodes = uart.map { u =>
+    u.ioNode.makeSink
   }
 }
 
